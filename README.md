@@ -2,7 +2,7 @@
 
 
 Overview
-A system that allows users to search for and book rooms that are added by hosts
+A Proof of Concept (PoC) system that allows users to search for and book rooms that are added by hosts
 
 
 Description
