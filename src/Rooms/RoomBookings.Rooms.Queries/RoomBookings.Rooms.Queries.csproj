@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="GetRoomBookings\" />
+    <Folder Include="GetUserBookedRooms\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\RoomBookings.Common.Application\RoomBookings.Common.Application.csproj" />
+    <ProjectReference Include="..\RoomBookings.Rooms.Domain\RoomBookings.Rooms.Domain.csproj" />
+    <ProjectReference Include="..\RoomBookings.Rooms.SqlServer\RoomBookings.Rooms.SqlServer.csproj" />
+  </ItemGroup>
+
+</Project>
