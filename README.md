@@ -41,7 +41,7 @@ For system wide asynchronous communications [Integration Events](https://learn.m
 
 [Domain Events](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation) will be used for inter aggregate communication within each microservice
 
-Repository pattern for write side persistence
+Repository and Unit Of Work patterns for abstracting write side persistence
 
 Unit Testing, Functional Testing and End To End Smoke Testing will be employed
 
