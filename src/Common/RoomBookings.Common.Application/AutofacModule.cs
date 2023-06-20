@@ -5,8 +5,6 @@ using MediatR;
 using RoomBookings.Common.Application.Commands;
 using RoomBookings.Common.Application.DomainEvents;
 using RoomBookings.Common.Application.Helpers;
-using RoomBookings.Common.Application.Persistence;
-using RoomBookings.Common.Application.Validation;
 using RoomBookings.CommonQueries;
 
 namespace RoomBookings.Common.Application;

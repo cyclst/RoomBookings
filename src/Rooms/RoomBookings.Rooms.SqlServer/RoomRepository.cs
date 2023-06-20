@@ -9,7 +9,7 @@ public class RoomRepository : IRoomRepository
 {
     protected RoomsDbContext Context;
 
-    public IUnitOfWork UnitOfWork => Context;
+    //public IUnitOfWork UnitOfWork => Context;
 
     public RoomRepository(RoomsDbContext context)
     {

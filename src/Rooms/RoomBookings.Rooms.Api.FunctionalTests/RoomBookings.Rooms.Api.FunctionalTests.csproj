@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\RoomBookings.Common.Test\RoomBookings.Common.Test.csproj" />
-    <ProjectReference Include="..\Rooms\RoomBookings.Rooms.Api\RoomBookings.Rooms.Api.csproj" />
-    <ProjectReference Include="..\Rooms\RoomBookings.Rooms.Application\RoomBookings.Rooms.Application.csproj" />
-    <ProjectReference Include="..\Rooms\RoomBookings.Rooms.Domain\RoomBookings.Rooms.Domain.csproj" />
+    <ProjectReference Include="..\..\Common\RoomBookings.Common.Test\RoomBookings.Common.Test.csproj" />
+    <ProjectReference Include="..\RoomBookings.Rooms.Api\RoomBookings.Rooms.Api.csproj" />
+    <ProjectReference Include="..\RoomBookings.Rooms.Application\RoomBookings.Rooms.Application.csproj" />
+    <ProjectReference Include="..\RoomBookings.Rooms.Domain\RoomBookings.Rooms.Domain.csproj" />
   </ItemGroup>
 
 </Project>

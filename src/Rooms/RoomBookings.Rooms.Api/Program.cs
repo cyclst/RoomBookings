@@ -4,7 +4,6 @@ using Autofac.Extensions.DependencyInjection;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RoomBookings.Common.Application.Helpers;
-using RoomBookings.Common.Application.Validation;
 using RoomBookings.Rooms.SqlServer;
 using Serilog;
 
