@@ -1,16 +1,11 @@
-﻿using RoomBookings.Common.Domain;
+﻿using Cyclst.CleanArchitecture.Domain;
 using RoomBookings.Rooms.Domain.Constants;
 
 namespace RoomBookings.Rooms.Domain.ValueObjects;
 
 public record Bed : ValueObject
 {
-    public BedType BedType { get; set; }
-
-    public Bed(BedType bedType)
-    {
-        BedType = bedType;
-    }
+    public BedType BedType { get; init; }
 
     public int MaximumOccupancy => GetMaximumOccupancy();
 

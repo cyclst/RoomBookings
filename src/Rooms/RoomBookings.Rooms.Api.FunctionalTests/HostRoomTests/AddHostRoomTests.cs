@@ -1,10 +1,12 @@
 ﻿using System.Net.Http.Json;
 using FluentAssertions;
-using RoomBookings.Common.Domain.Constants;
-using RoomBookings.Rooms.Application.Commands.AddHostRoom;
+using Microsoft.Extensions.DependencyInjection;
+using RoomBookings.Rooms.Application.Command;
+using RoomBookings.Rooms.Application.Commands.AddRoom;
 using RoomBookings.Rooms.Domain;
 using RoomBookings.Rooms.Domain.Constants;
 using RoomBookings.Rooms.Domain.ValueObjects;
+using RoomBookings.Rooms.SqlServer;
 
 namespace RoomBookings.Rooms.Api.FunctionalTests.HostRoomTests;
 
@@ -18,13 +20,13 @@ public class AddHostRoomTests : TestFixtureBase
     {
         // Arrange
 
-        var room = new AddHostRoomCommand
+        var room = new AddRoomCommand
         {
             Address = new Address("1 No Way", "Some City", "Some Region", Country.UnitedKingdom, "SM1 1CT"),
             Beds = new List<Bed>
             {
-                new Bed(BedType.Double),
-                new Bed(BedType.Single)
+                new Bed { BedType = BedType.Double },
+                new Bed { BedType = BedType.Single }
             },
             DailyPrice = 100,
             Facilities = new Facilities
@@ -36,9 +38,17 @@ public class AddHostRoomTests : TestFixtureBase
         // Act
 
         var response = await Client.PostAsJsonAsync("hostroom/add", room);
+        var content = await response.Content.ReadAsStringAsync();
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
-        RoomRepository.Query().SingleOrDefault(x => x.Address.Address1 == "1 No Way").Should().NotBeNull();
+        int.Parse(content).Should().BeGreaterThan(0);
+
+        using (var scope = Factory.Services.CreateScope())
+        {
+            var roomRepository = scope.ServiceProvider.GetRequiredService<IRoomRepository>();
+
+            (await roomRepository.AnyQueryAsync(x => x.Address.Address1 == "1 No Way")).Should().BeTrue();
+        }
     }
 }

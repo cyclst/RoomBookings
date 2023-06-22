@@ -1,7 +1,7 @@
-﻿using RoomBookings.Common.Domain;
+﻿using Cyclst.CleanArchitecture.Domain;
 
 namespace RoomBookings.Rooms.Domain.DomainEvent;
 
-public record RoomBookingCancelledDomainEvent : IDomainEvent
+public record RoomBookingCancelledDomainEvent : BaseEvent
 {
 }

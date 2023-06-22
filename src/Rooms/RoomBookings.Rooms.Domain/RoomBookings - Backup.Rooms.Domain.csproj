@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cyclst.CleanArchitecture.Domain" Version="1.0.0-alpha.1" />
+    <PackageReference Include="Cyclst.Cyclst.CleanArchitecture.Domain" Version="1.0.0-alpha.1" />
   </ItemGroup>
 
 </Project>

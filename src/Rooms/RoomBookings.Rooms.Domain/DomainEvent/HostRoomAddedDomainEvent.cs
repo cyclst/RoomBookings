@@ -2,6 +2,6 @@
 
 namespace RoomBookings.Rooms.Domain.DomainEvent;
 
-public record RoomBookingCreatedDomainEvent : BaseEvent
+public record HostRoomAddedDomainEvent : BaseEvent
 {
 }

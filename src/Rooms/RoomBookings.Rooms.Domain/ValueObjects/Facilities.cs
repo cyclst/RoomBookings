@@ -1,4 +1,4 @@
-﻿using RoomBookings.Common.Domain;
+﻿using Cyclst.CleanArchitecture.Domain;
 
 namespace RoomBookings.Rooms.Domain.ValueObjects;
 

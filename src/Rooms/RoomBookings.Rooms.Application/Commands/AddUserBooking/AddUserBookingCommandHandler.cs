@@ -1,10 +1,9 @@
-﻿using RoomBookings.Common.Application.Commands;
-using RoomBookings.Rooms.Application.Commands.AddHostRoom;
-using RoomBookings.Rooms.Application.Command;
+﻿using RoomBookings.Rooms.Application.Command;
+using MediatR;
 
 namespace RoomBookings.Rooms.Application.Commands.AddUserBooking;
 
-public class AddUserBookingCommandHandler : ICommandHandler<AddUserBookingCommand>
+public class AddUserBookingCommandHandler : IRequestHandler<AddUserBookingCommand>
 {
     IRoomRepository _roomRepository;
 
@@ -13,7 +12,7 @@ public class AddUserBookingCommandHandler : ICommandHandler<AddUserBookingComman
         _roomRepository = roomRepository ?? throw new ArgumentNullException(nameof(roomRepository));
     }
 
-    public Task<CommandResult> Handle(AddUserBookingCommand command, CancellationToken cancellationToken)
+    public Task Handle(AddUserBookingCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

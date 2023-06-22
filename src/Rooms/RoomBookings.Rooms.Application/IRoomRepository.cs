@@ -1,17 +1,9 @@
-﻿using System.Diagnostics;
+﻿using Cyclst.CleanArchitecture.Application.Persistence;
 using RoomBookings.Rooms.Domain;
 
 namespace RoomBookings.Rooms.Application.Command;
 
-public interface IRoomRepository
+public interface IRoomRepository : IRepository<Room>
 {
-    Task<Room> GetByIdAsync(int id);
 
-    IQueryable<Room> Query();
-
-    Task<int> AddAsync(Room room);
-
-    Task DeleteAsync(int id);
-
-    void Update(Room room);
 }

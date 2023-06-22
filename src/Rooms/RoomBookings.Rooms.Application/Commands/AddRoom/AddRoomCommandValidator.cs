@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 
-namespace RoomBookings.Rooms.Application.Commands.AddHostRoom;
+namespace RoomBookings.Rooms.Application.Commands.AddRoom;
 
-public class AddHostRoomCommandValidator : AbstractValidator<AddHostRoomCommand>
+public class AddRoomCommandValidator : AbstractValidator<AddRoomCommand>
 {
-    public AddHostRoomCommandValidator()
+    public AddRoomCommandValidator()
     {
         RuleFor(x => x.Address).NotNull();
         RuleFor(x => x.Address.Address1).NotEmpty();

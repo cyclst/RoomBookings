@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cyclst.CleanArchitecture.Domain" Version="1.0.0-alpha.1" />
+	<PackageReference Include="Cyclst.CleanArchitecture.Application" Version="1.0.0-alpha.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
   </ItemGroup>
 
 </Project>

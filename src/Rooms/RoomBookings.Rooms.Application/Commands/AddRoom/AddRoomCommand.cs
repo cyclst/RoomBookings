@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using RoomBookings.Common.Application.Commands;
+﻿using MediatR;
 using RoomBookings.Rooms.Domain.ValueObjects;
 
-namespace RoomBookings.Rooms.Application.Commands.AddHostRoom;
+namespace RoomBookings.Rooms.Application.Commands.AddRoom;
 
-public record AddHostRoomCommand : ICommand<int>
+public record AddRoomCommand : IRequest<int>
 {
     public Address Address { get; init; }
     public IEnumerable<Bed> Beds { get; init; }

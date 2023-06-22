@@ -12,7 +12,7 @@ using RoomBookings.Rooms.SqlServer;
 namespace RoomBookings.Rooms.SqlServer.Migrations
 {
     [DbContext(typeof(RoomsDbContext))]
-    [Migration("20230609082742_InitialCreate")]
+    [Migration("20230621172921_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -33,20 +33,11 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("RoomId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -63,8 +54,14 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
+                    b.Property<double>("DailyPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("MaximumBookingDurationDays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinimumBookingDurationDays")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -75,12 +72,49 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
                 {
                     b.HasOne("RoomBookings.Rooms.Domain.Room", null)
                         .WithMany("Bookings")
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RoomBookings.Rooms.Domain.Room", b =>
                 {
-                    b.OwnsMany("RoomBookings.Rooms.Domain.Bed", "Beds", b1 =>
+                    b.OwnsOne("RoomBookings.Rooms.Domain.ValueObjects.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("RoomId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Address1")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Region")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("RoomId");
+
+                            b1.ToTable("Rooms");
+
+                            b1.ToJson("Address");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomId");
+                        });
+
+                    b.OwnsMany("RoomBookings.Rooms.Domain.ValueObjects.Bed", "Beds", b1 =>
                         {
                             b1.Property<int>("RoomId")
                                 .HasColumnType("int");
@@ -103,13 +137,35 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
                                 .HasForeignKey("RoomId");
                         });
 
-                    b.OwnsOne("RoomBookings.Rooms.Domain.RoomFeatures", "RoomFeatures", b1 =>
+                    b.OwnsMany("RoomBookings.Rooms.Domain.ValueObjects.BookingDurationDiscount", "BookingDurationDiscounts", b1 =>
                         {
                             b1.Property<int>("RoomId")
                                 .HasColumnType("int");
 
-                            b1.Property<bool>("AllowPets")
-                                .HasColumnType("bit");
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            b1.Property<int>("DiscountPercentage")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("DurationDays")
+                                .HasColumnType("int");
+
+                            b1.HasKey("RoomId", "Id");
+
+                            b1.ToTable("Rooms");
+
+                            b1.ToJson("BookingDurationDiscounts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomId");
+                        });
+
+                    b.OwnsOne("RoomBookings.Rooms.Domain.ValueObjects.Facilities", "Facilities", b1 =>
+                        {
+                            b1.Property<int>("RoomId")
+                                .HasColumnType("int");
 
                             b1.Property<bool>("HasAirCon")
                                 .HasColumnType("bit");
@@ -117,23 +173,30 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
                             b1.Property<bool>("HasFreeParking")
                                 .HasColumnType("bit");
 
-                            b1.Property<bool>("HasTv")
+                            b1.Property<bool>("HasFreeWifi")
                                 .HasColumnType("bit");
 
-                            b1.Property<bool>("HasWifi")
+                            b1.Property<bool>("HasSatelliteTv")
                                 .HasColumnType("bit");
 
                             b1.HasKey("RoomId");
 
                             b1.ToTable("Rooms");
 
+                            b1.ToJson("Facilities");
+
                             b1.WithOwner()
                                 .HasForeignKey("RoomId");
                         });
 
+                    b.Navigation("Address")
+                        .IsRequired();
+
                     b.Navigation("Beds");
 
-                    b.Navigation("RoomFeatures")
+                    b.Navigation("BookingDurationDiscounts");
+
+                    b.Navigation("Facilities")
                         .IsRequired();
                 });
 

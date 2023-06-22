@@ -1,10 +1,11 @@
-﻿using RoomBookings.Common.Domain;
+﻿using Cyclst.CleanArchitecture.Domain;
 using RoomBookings.Rooms.Domain.DomainEvent;
 
 namespace RoomBookings.Rooms.Domain
 {
-    public class Booking : Entity
+    public class Booking : BaseEntity
     {
+        public int RoomId { get; private set; }
         public int UserId { get; }
         public DateTime StartDate { get; }
         public DateTime EndDate { get; }

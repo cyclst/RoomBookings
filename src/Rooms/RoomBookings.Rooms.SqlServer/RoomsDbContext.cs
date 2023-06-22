@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RoomBookings.Common.Application.DomainEvents;
-using RoomBookings.Common.SqlServer;
+﻿using Cyclst.CleanArchitecture.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using RoomBookings.Rooms.Domain;
 
 namespace RoomBookings.Rooms.SqlServer
 {
-    public class RoomsDbContext : BaseDbContext
+    public class RoomsDbContext : DbContext, IDbContext
     {
         public DbSet<Room> Rooms { get; set; }
 
-        public RoomsDbContext(IDomainEventPublisher domainEventPublisher, DbContextOptions<RoomsDbContext> options) : base(domainEventPublisher, options)
+        public RoomsDbContext(DbContextOptions<RoomsDbContext> options) : base(options)
         {
 
         }
@@ -32,6 +31,5 @@ namespace RoomBookings.Rooms.SqlServer
                 .Entity<Room>()
                 .OwnsMany(l => l.BookingDurationDiscounts, b => { b.ToJson(); });
         }
-
     }
 }

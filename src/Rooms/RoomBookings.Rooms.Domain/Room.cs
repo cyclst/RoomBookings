@@ -1,35 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
-using RoomBookings.Common.Domain;
+﻿using Cyclst.CleanArchitecture.Domain;
+using RoomBookings.Rooms.Domain.DomainEvent;
 using RoomBookings.Rooms.Domain.ValueObjects;
 
 namespace RoomBookings.Rooms.Domain;
 
-public class Room : Entity, IAggregateRoot
+public class Room : BaseEntity
 {
-    public IEnumerable<Booking> Bookings { get; }
-    public Address Address { get; }
-    public IEnumerable<Bed> Beds { get; }
-    public int MinimumBookingDurationDays { get; }
-    public int? MaximumBookingDurationDays { get; }
-    public double DailyPrice { get; }
-    public IEnumerable<BookingDurationDiscount> BookingDurationDiscounts { get; }
-    public int MaxOccupancy { get; }
-    public Facilities Facilities { get; }
+    public ICollection<Booking> Bookings { get; init; } = new List<Booking>();
+    public Address Address { get; init; }
+    public ICollection<Bed> Beds { get; init; } = new List<Bed>();
+    public int MinimumBookingDurationDays { get; init; }
+    public int? MaximumBookingDurationDays { get; init; }
+    public double DailyPrice { get; init; }
+    public ICollection<BookingDurationDiscount> BookingDurationDiscounts { get; init; } = new List<BookingDurationDiscount>();
+    public int MaxOccupancy => Beds.Sum(x => x.MaximumOccupancy);
+    public Facilities Facilities { get; } = new Facilities();
 
-    protected Room() { }
-
-    public Room(Address address, IEnumerable<Bed> beds, int minimumBookingDurationDays, int? maximumBookingDurationDays, 
-        double dailyPrice, IEnumerable<BookingDurationDiscount> bookingDurationDiscounts, Facilities facilities)
+    public Room() 
     {
-        Address = address;
-        Beds = beds;
-        MinimumBookingDurationDays = minimumBookingDurationDays;
-        MaximumBookingDurationDays = maximumBookingDurationDays;
-        DailyPrice = dailyPrice;
-        BookingDurationDiscounts = bookingDurationDiscounts;
-        Facilities = facilities;
-
-
-        MaxOccupancy = beds.Sum(x => x.MaximumOccupancy);
+        AddDomainEvent(new HostRoomAddedDomainEvent());
     }
 }

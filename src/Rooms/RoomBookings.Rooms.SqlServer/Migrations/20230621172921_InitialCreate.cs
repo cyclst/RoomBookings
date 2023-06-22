@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,13 +16,13 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomFeatures_AllowPets = table.Column<bool>(type: "bit", nullable: false),
-                    RoomFeatures_HasWifi = table.Column<bool>(type: "bit", nullable: false),
-                    RoomFeatures_HasFreeParking = table.Column<bool>(type: "bit", nullable: false),
-                    RoomFeatures_HasAirCon = table.Column<bool>(type: "bit", nullable: false),
-                    RoomFeatures_HasTv = table.Column<bool>(type: "bit", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Beds = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    MinimumBookingDurationDays = table.Column<int>(type: "int", nullable: false),
+                    MaximumBookingDurationDays = table.Column<int>(type: "int", nullable: true),
+                    DailyPrice = table.Column<double>(type: "float", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Beds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BookingDurationDiscounts = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Facilities = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,11 +35,8 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsCancelled = table.Column<bool>(type: "bit", nullable: false),
-                    RoomId = table.Column<int>(type: "int", nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RoomId = table.Column<int>(type: "int", nullable: false),
+                    IsCancelled = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,7 +45,8 @@ namespace RoomBookings.Rooms.SqlServer.Migrations
                         name: "FK_Booking_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

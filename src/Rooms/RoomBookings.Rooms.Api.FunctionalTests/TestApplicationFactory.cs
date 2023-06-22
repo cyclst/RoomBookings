@@ -1,36 +1,34 @@
-﻿using Autofac;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using RoomBookings.Rooms.Application.Command;
+using RoomBookings.Rooms.SqlServer;
 
-namespace RoomBookings.Rooms.Api.FunctionalTests
+namespace RoomBookings.Rooms.Api.FunctionalTests;
+
+public class TestApplicationFactory : WebApplicationFactory<IApplicationMarker>
 {
-    public class TestApplicationFactory : WebApplicationFactory<Application.Api.Program>
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        protected override IHost CreateHost(IHostBuilder builder)
+        builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            builder.ConfigureContainer<ContainerBuilder>(builder =>
-            {
-                builder.RegisterType<InMemoryRoomRepository>().As<IRoomRepository>().SingleInstance();
-            });
+            var integrationConfig = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
 
-            builder.ConfigureHostConfiguration((config) =>
-            {
-                config.AddInMemoryCollection(
-                    new Dictionary<string, string?>
-                    {
-                        ["ConnectionString"] = @"NOTUSED"
-                    });
-            });
+            configurationBuilder.AddConfiguration(integrationConfig);
+        });
 
-            return base.CreateHost(builder);
-        }
-
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        builder.ConfigureServices((builder, services) =>
         {
-            builder.UseEnvironment("Development");
-        }
+            services
+                .Remove<DbContextOptions<RoomsDbContext>>()
+                .AddDbContext<RoomsDbContext>((sp, options) =>
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                        builder => builder.MigrationsAssembly(typeof(RoomsDbContext).Assembly.FullName)));
+        });
     }
 }

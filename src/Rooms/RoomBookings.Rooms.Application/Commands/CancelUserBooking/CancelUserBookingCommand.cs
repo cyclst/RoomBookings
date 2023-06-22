@@ -1,8 +1,8 @@
-﻿using RoomBookings.Common.Application.Commands;
+﻿using MediatR;
 
 namespace RoomBookings.Rooms.Application.Commands.AddUserBooking;
 
-public record CancelUserBookingCommand : ICommand
+public record CancelUserBookingCommand : IRequest
 {
 
 }

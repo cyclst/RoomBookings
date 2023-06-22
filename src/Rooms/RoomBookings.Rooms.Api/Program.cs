@@ -1,69 +1,56 @@
-using Autofac;
-using Autofac.Core;
-using Autofac.Extensions.DependencyInjection;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RoomBookings.Common.Application.Helpers;
+using RoomBookings.Rooms.Api;
 using RoomBookings.Rooms.SqlServer;
+using RoomBookings.Rooms.Application;
+using RoomBookings.Rooms.Queries;
 using Serilog;
 
-namespace RoomBookings.Rooms.Application.Api
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCommonApplicationServices();
+builder.Services.AddCommonEntityFrameworkServices();
+
+builder.Services.AddApplicationServices();
+builder.Services.AddQueryServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddWebUIServices();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    public class Program
+    app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint();
+
+    // Initialise and seed database
+    using (var scope = app.Services.CreateScope())
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-
-            builder.Host.UseSerilog((ctx, lc) => lc
-                .WriteTo.Console()
-                .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day));
-
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureContainer<ContainerBuilder>(builder =>
-                {
-                    var assemblies = System.Reflection.Assembly.GetExecutingAssembly().GetReferencedAssemblies("RoomBookings").Distinct().ToArray();
-
-                    builder.RegisterAssemblyModules(assemblies);
-                });
-
-            var connectionString = builder.Configuration["ConnectionString"] ?? throw new InvalidOperationException("Connection string 'ConnectionString' not found.");
-
-            builder.Services.AddDbContext<RoomsDbContext>(options =>
-            {
-                options.UseSqlServer(connectionString//,
-                                                     //sqlServerOptionsAction: sqlOptions =>
-                                                     //{
-                                                     //    sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
-                                                     //    sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                                                     //}
-                );
-            }, ServiceLifetime.Scoped);
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
-        }
+        var initialiser = scope.ServiceProvider.GetRequiredService<RoomsDbContextInitialiser>();
+        await initialiser.InitialiseAsync();
+        await initialiser.SeedAsync();
     }
 }
+else
+{
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHealthChecks("/health");
+app.UseHttpsRedirection();
+//app.UseStaticFiles();
+
+app.UseSwaggerUi3(settings =>
+{
+    settings.Path = "/api";
+    settings.DocumentPath = "/api/specification.json";
+});
+
+app.UseAuthentication();
+//app.UseIdentityServer();
+app.UseAuthorization();
+
+
+app.MapControllers();
+
+app.Run();

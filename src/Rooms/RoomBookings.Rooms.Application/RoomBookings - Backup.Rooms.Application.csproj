@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cyclst.CleanArchitecture.Application" Version="1.0.0-alpha.1" />
+    <PackageReference Include="Cyclst.Cyclst.CleanArchitecture.Application" Version="1.0.0-alpha.1" />
     <PackageReference Include="FluentValidation" Version="11.5.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
 	<PackageReference Include="Mapster" Version="7.3.0" />

@@ -12,7 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\RoomBookings.Common.Application\RoomBookings.Common.Application.csproj" />
+	<PackageReference Include="Cyclst.CleanArchitecture.Application" Version="1.0.0-alpha.1" />
+	<PackageReference Include="Cyclst.CleanArchitecture.EntityFramework" Version="1.0.0-alpha.1" />
+    <PackageReference Include="Mapster.EFCore" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RoomBookings.Rooms.Domain\RoomBookings.Rooms.Domain.csproj" />
     <ProjectReference Include="..\RoomBookings.Rooms.SqlServer\RoomBookings.Rooms.SqlServer.csproj" />
   </ItemGroup>

@@ -1,34 +1,26 @@
-﻿using AutoMapper;
-using RoomBookings.CommonQueries;
+﻿using Cyclst.CleanArchitecture.EntityFramework;
+using MediatR;
 using RoomBookings.Rooms.SqlServer;
+using Mapster;
 
 namespace RoomBookings.RoomsQueries.SearchRooms
 {
-    public class SearchRoomsQueryHandler : IEnumerableItemQueryHandler<SearchRoomsQuery, SearchRoomsResultDto>
+    public class SearchRoomsQueryHandler : IRequestHandler<SearchRoomsQuery, PaginatedList<SearchRoomsResultDto>>
     {
-        private readonly RoomsDbContext _roomsDbContext;
-        private readonly IMapper _mapper;
+        private readonly RoomsDbContext _context;
 
-        public SearchRoomsQueryHandler(RoomsDbContext roomsDbContext, IMapper mapper)
+        public SearchRoomsQueryHandler(RoomsDbContext context)
         {
-            _roomsDbContext = roomsDbContext;
-            _mapper = mapper;
+            _context = context;
         }
 
-        public async Task<EnumerableItemQueryResult<SearchRoomsResultDto>> Handle(SearchRoomsQuery query, CancellationToken cancellationToken)
+        public async Task<PaginatedList<SearchRoomsResultDto>> Handle(SearchRoomsQuery request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var result = _roomsDbContext.Rooms
-                    .Where(x => !x.Bookings.Any(b => b.StartDate > query.EndDate))
-                    .Select(a => _mapper.Map<SearchRoomsResultDto>(a));
-
-                return EnumerableItemQueryResult.Ok(result.AsEnumerable());
-            }
-            catch (Exception ex)
-            {
-                return EnumerableItemQueryResult<SearchRoomsResultDto>.Error("Error searching rooms");
-            }
+            return await _context.Rooms
+                .Where(x => !x.Bookings.Any(b => b.StartDate > request.EndDate))
+                .OrderBy(x => x.DailyPrice)
+                .ProjectToType<SearchRoomsResultDto>()
+                .PaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }
 }

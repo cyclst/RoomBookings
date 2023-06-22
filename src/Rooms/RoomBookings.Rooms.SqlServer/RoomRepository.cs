@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RoomBookings.Common.Application.Persistence;
+﻿using System.Linq.Expressions;
+using Cyclst.CleanArchitecture.Application.Persistence;
+using Microsoft.EntityFrameworkCore;
 using RoomBookings.Rooms.Application.Command;
 using RoomBookings.Rooms.Domain;
 
@@ -9,21 +10,32 @@ public class RoomRepository : IRoomRepository
 {
     protected RoomsDbContext Context;
 
-    //public IUnitOfWork UnitOfWork => Context;
+    public IUnitOfWork UnitOfWork { get; }
 
-    public RoomRepository(RoomsDbContext context)
+    public RoomRepository(RoomsDbContext context, IUnitOfWork unitOfWork)
     {
-        Context = context ?? throw new ArgumentNullException(nameof(context));
+        Context = context;
+        UnitOfWork = unitOfWork;
     }
 
-    public async Task<Room?> GetByIdAsync(int id)
+    public async Task<Room> GetByIdAsync(int id)
     {
         return await Context.Rooms.FindAsync(id);
     }
 
-    public IQueryable<Room> Query()
+    public IAsyncEnumerable<Room> GetAllAsync()
     {
-        return Context.Rooms.AsQueryable();
+        return Context.Rooms.AsAsyncEnumerable();
+    }
+
+    public async Task<bool> AllQueryAsync(Expression<Func<Room, bool>> predicate)
+    {
+        return await Context.Rooms.AsQueryable().AllAsync(predicate);
+    }
+
+    public async Task<bool> AnyQueryAsync(Expression<Func<Room, bool>> predicate)
+    {
+        return await Context.Rooms.AsQueryable().AnyAsync(predicate);
     }
 
     public async Task<int> AddAsync(Room room)
